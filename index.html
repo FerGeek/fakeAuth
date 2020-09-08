@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html class="ui-mobile">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--<base href="https://larioja.neotec.com.ar/servicio/lariojaprovincia/#consulta_dni">-->
+  <base href=".">
+  <link href="css/sweetalert.css" type="text/css" rel="stylesheet">
+  <!-- <script src="js/jquery.js" type="text/javascript"></script> -->
+  <script src="js/sweetalert.min.js" type="text/javascript"></script>
+  <!--Fin para utilizar SweetAlert-->
+  <link rel="stylesheet" type="text/css" href="css/slick.css">
+  <link rel="stylesheet" type="text/css" href="css/slick-theme.css">
+  <link rel="stylesheet" href="css/photoswipe.min.css">
+  <link rel="stylesheet" href="css/default-skin.min.css">
+  <!--Bootstrap para elcssModaljquery.mobile-1.4.1.min.css servicios-->
+  <link href="css/bootstrap.min.css" relcss"stylesheet">
+  <script src="js/jquery-1.12.4.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <!--Fin para Modal jquery.js-->
+  <link rel="stylesheet" href="css/style.css+bootstrap.css+font-awesome.css.pagespeed.cc.VVWCBk7kTK.css" type="text/css">
+  <link rel="stylesheet" href="css/bootstrap.min(1).css">
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <style type="text/css">
+    .hijo {
+      max-width: 400px;
+    }
+    .hijo2 {
+      max-width: 400px;
+    }
+    .hijo3 {
+      max-width: 400px;
+    }
+    #reloj{
+      font-size:36px;
+      color:#fff;
+    }
+    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color:rgb(80,80,80);
+      opacity: 1; /* Firefox */
+    }
+    #boton-encabezado-principal{
+      background-color:transparent;
+      border-color:transparent;
+      margin-top:10px;
+      text-shadow: none;
+    }
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 6px solid blue;
+      border-right: 6px solid orange;
+      border-bottom: 6px solid red;
+      width: 50px;
+      height: 50px;
+      -webkit-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+    }
+
+    @-webkit-keyframes spin {
+      0% { -webkit-transform: rotate(0deg); }
+      100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+
+    }
+    .ui-input-text, .ui-input-search {
+      margin: 0 !important;
+    }
+    .disclaimer{
+      background: rgba(0,0,0,0.7);
+      position: fixed;
+      width: 100%;
+      height: auto;
+      min-height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      animation: bckop .45s ease;
+    }
+    .disclaimer span{
+      width: calc(100% - 50px);
+      background: rgb(255, 255, 255);
+      height:auto;
+      max-width: 800px;
+      max-height: calc(100% - 50px);
+      position: relative;
+      flex-direction: column;
+      align-items: baseline;
+      border-radius: 5px;
+      display: flex;
+      padding: 15px;
+      animation-fill-mode: forwards;
+      animation-delay: .45s;
+      animation: bckopSpn .45s ease;
+    }
+    .disclaimer ul{
+      list-style: square;
+    }
+    .disclaimer a:link {color: #EA1B36}
+    .disclaimer a.btn {
+      padding: 10px;
+      color: white;
+      background: #EA1B36;
+      border-radius: 9px;
+      float: right;
+      display: flex;
+      flex-direction: row;
+      align-self: flex-end;
+      position: relative;
+    }
+    .disclaimer span h4, .disclaimer span ul li{
+      position: relative;
+      width: calc(100% - 10px);
+      float: left;
+      margin: 10px 0 0 0;
+    }
+    @keyframes bckop {
+      0%{opacity: 0}
+      100%{opacity: 1}
+    }
+    @keyframes  bckopSpn {
+      0%{ transform: scale(0,0);}
+      100%{transform: scale(1,1);}
+    }
+  </style>
+  <script type="text/javascript" src="js/mododiablo.js"></script>
+  <script type="text/javascript">
+    var dni_fp20= '';
+    var apellido_nombre_fp20= '';
+    var institucion_fp20= '';
+    var nivel_fp20= '';
+    var localidad_fp20= '';
+    var departamento_fp20= '';
+    var dia_fp20= '';
+    var mes_fp20= '';
+    var anio_fp20= '';
+    var fecha_nacimiento_fp20='';
+    var telefono_fp20='';
+    var origen_fp20='Web';
+    function startTime() {
+        var today = new Date();
+        var hr = today.getHours();
+        var min = today.getMinutes();
+        var sec = today.getSeconds();
+        //Add a zero in front of numbers<10
+        min = checkTime(min);
+        sec = checkTime(sec);
+        document.getElementById("reloj").innerHTML = hr + " : " + min + " : " + sec;
+        var time = setTimeout(function(){ startTime() }, 500);
+      }
+    function checkTime(i) {
+      if (i < 10) {
+          i = "0" + i;
+        }
+        return i;
+    }
+    function consultaDNI(){
+          document.getElementById("tabla_estado").style.backgroundColor='#EA1B36';
+          $("#texto_estado").text('');
+          document.getElementById("mylistview_permiso_circular").style.visibility = "hidden";
+          var dni= $.trim($("#dni").val());
+          //alert(dni);
+          dni=Number(dni);
+          $("#texto_dni").text(dni);
+          //alert(dni);
+          // var url = "https://larioja.neotec.com.ar/api/v1/obtener_permisos_para_circular.php";
+          let url = '../mydata.json'
+          var data ="parametro="+dni;
+              $.ajax({
+                type: "POST",
+                // crossDomain: true,
+                cache: false,
+                url: url,
+                data: data,
+                success: function(response){
+                  // var csPedidosJson = JSON.parse(response);
+                  var csPedidosJson = Adata;
+                  console.log(csPedidosJson);
+                  if (csPedidosJson.estado == 1){
+                    var csPedidosData = csPedidosJson.datos;
+                    //alert(csPedidosData);
+                    if(csPedidosData != ""){
+                      // $("#texto_dni").text(dni);
+                      $("#texto_estado").text('AUTORIZADO');
+                      document.getElementById("tabla_estado").style.backgroundColor='green';
+                      document.getElementById("mylistview_permiso_circular").style.visibility = "visible";
+                      var listaPrestadores = document.getElementById("mylistview_permiso_circular");
+                      $("#mylistview_permiso_circular").empty;
+                      var variable = "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>";
+                      for(var i = 0; i < csPedidosData.length; i++){
+                        var object = csPedidosData[i];
+                        variable += "<div class='center' style='text-align:center;margin-top:10px;'>";
+                        variable += "<p style='text-align:center;font-size:250%;'>"+object.persona+"</p><p style='text-align:center;font-size:200%;'>"+object.trabaja_en+"<br>"+object.profesion+"<br>"+object.vehiculo_tipo+"<br>"+object.patente+"</p>";
+                        variable += "</div><hr>";
+                      }
+                      listaPrestadores.innerHTML = variable;
+                      $("#mylistview_permiso_circular").listview("refresh");
+                      //$.mobile.loading( "hide" );
+                    }else{
+                      //$("#texto_dni").text(dni);
+                      //swal('RECHAZADO','¡El DNI Ingresado NO está Autorizado!');
+                      $("#texto_estado").text('RECHAZADO');
+                      document.getElementById("tabla_estado").style.backgroundColor='black';
+                      $("#mylistview_permiso_circular").empty;
+                      var variable = "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>";
+                    }
+
+                  }else{
+                    //$("#texto_dni").text(dni);
+                    $("#texto_estado").text('RECHAZADO');
+                    document.getElementById("tabla_estado").style.backgroundColor='black';
+                  }
+
+                }
+              });
+            }
+    function requestCertf(){
+          // $('#dni').val()
+          document.getElementById("tabla_estado").style.backgroundColor='#EA1B36';
+          $("#texto_estado").text('');
+          document.getElementById("mylistview_permiso_circular").style.visibility = "hidden";
+          var dni= $.trim($("#dni").val());
+          //alert(dni);
+          dni=Number(dni);
+          $("#texto_dni").text(dni);
+              var csPedidosJson = getDniData(dni);
+              if (csPedidosJson.estado == 1){
+                var csPedidosData = csPedidosJson.datos;
+                if(csPedidosData != ""){
+                  $("#texto_estado").text('AUTORIZADO');
+                  document.getElementById("tabla_estado").style.backgroundColor='green';
+                  document.getElementById("mylistview_permiso_circular").style.visibility = "visible";
+                  var listaPrestadores = document.getElementById("mylistview_permiso_circular");
+                  $("#mylistview_permiso_circular").empty;
+                  var variable = "<li class=\"ui-li-static ui-body-inherit ui-first-child ui-last-child\"><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>";
+                  // var variable = "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>";
+                  for(var i = 0; i < csPedidosData.length; i++){
+                    var object = csPedidosData[i];
+                    variable += "<div class='center' style='text-align:center;margin-top:10px;'>";
+                    variable += "<p style='text-align:center;font-size:250%;'>"+object.persona+"</p><p style='text-align:center;font-size:200%;'>"+object.trabaja_en+"<br>"+object.profesion+"<br>"+object.vehiculo_tipo+"<br>"+object.patente+"</p>";
+                    variable += "</div><hr>";
+                  }
+                  listaPrestadores.innerHTML = variable;
+                }else{
+                  $("#texto_estado").text('RECHAZADO');
+                  document.getElementById("tabla_estado").style.backgroundColor='black';
+                  // $("#mylistview_permiso_circular").empty;
+                  var variable = "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>";
+                }
+
+              }else{
+                $("#texto_estado").text('RECHAZADO');
+                document.getElementById("tabla_estado").style.backgroundColor='black';
+              }
+            }
+    function festipeques20(){
+            //INICIO: INICIALIZAR VARIABLES
+            dni_fp20= '';
+            apellido_nombre_fp20= '';
+            institucion_fp20= '';
+            nivel_fp20= '';
+            localidad_fp20= '';
+            departamento_fp20= '';
+            dia_fp20= '';
+            mes_fp20= '';
+            anio_fp20= '';
+            fecha_nacimiento_fp20= '';
+            telefono_fp20='';
+            document.getElementById("dni_fp20").value =dni_fp20;
+            document.getElementById("apellido_nombre_fp20").value = apellido_nombre_fp20;
+            document.getElementById("institucion_fp20").value =institucion_fp20;
+            $("#nivel_fp20").val(nivel_fp20).change();
+            $("#localidad_fp20").val(localidad_fp20).change();
+            $("#departamento_fp20").val(departamento_fp20).change();
+            $("#dia_fp20").val(dia_fp20).change();
+            $("#mes_fp20").val(mes_fp20).change();
+            $("#anio_fp20").val(anio_fp20).change();
+            document.getElementById("telefono_fp20").value = telefono_fp20;
+            //FIN: VARIABLES
+          }
+    function enviarFestipeques20(){
+            dni_fp20= $.trim($("#dni_fp20").val());
+            apellido_nombre_fp20= $.trim($("#apellido_nombre_fp20").val());
+            institucion_fp20= $.trim($("#institucion_fp20").val());
+            nivel_fp20= $.trim($("#nivel_fp20").val());
+            localidad_fp20= $.trim($("#localidad_fp20").val());
+            departamento_fp20= $.trim($("#departamento_fp20").val());
+
+            dia_fp20= $.trim($("#dia_fp20").val());
+            mes_fp20= $.trim($("#mes_fp20").val());
+            anio_fp20= $.trim($("#anio_fp20").val());
+            fecha_nacimiento_fp20=anio_fp20+'-'+mes_fp20+'-'+dia_fp20;
+
+            telefono_fp20= $.trim($("#telefono_fp20").val());
+
+            if(dni_fp20=='' || apellido_nombre_fp20=='' || localidad_fp20=='' || departamento_fp20=='' || dia_fp20=='' || mes_fp20=='' ||
+            anio_fp20=='' || telefono_fp20=='' || nivel_fp20=='')
+            {
+              swal('','Debés completar los campos obligatorios para participar');
+            }
+            else{
+              swal('','Se está enviando la información, aguarde un momento');
+              var url = "https://larioja.neotec.com.ar/api/v1/enviar_festipeques20.php";
+              var datosString ="dni_fp20="+dni_fp20+"&apellido_nombre_fp20="+apellido_nombre_fp20+"&institucion_fp20="+institucion_fp20+"&nivel_fp20="+nivel_fp20+"&localidad_fp20="+localidad_fp20+"&departamento_fp20="+departamento_fp20+"&fecha_nacimiento_fp20="+fecha_nacimiento_fp20+"&telefono_fp20="+telefono_fp20+"&origen_fp20="+origen_fp20;
+              $.ajax({
+                  type: "POST",crossDomain: true, cache: false,
+                  url: url,
+                  data: datosString,
+                  success: function(response){
+                      if(response!="error_envio"){
+                          swal('','¡Listo, Ya estás participando!');
+                          setTimeout('enviadoFestipeques20()',3000);
+                        }else{
+                          swal('','¡Ya estás participando!');
+                          setTimeout('enviadoFestipeques20()',3000);
+                          //window.location = '#index';
+                        }
+                      }
+                    });
+                  }
+                }
+
+                function enviadoFestipeques20(){
+                  window.location = 'https://larioja.gob.ar/lariojaprovincia';
+                }
+
+                function cronogramaSueldos(){
+                  document.getElementById("mylistview_cronograma_sueldos").style.visibility = "hidden";
+                  var url = "https://larioja.neotec.com.ar/api/v1/obtener_cronograma_de_sueldo.php";
+                  var dni='31449488';
+                  var data ="parametro="+dni;
+                  $.ajax({
+                    type: "POST",crossDomain: true, cache: false,
+                    url: url,
+                    data: data,
+                    success: function(response){
+                      var csPedidosJson = JSON.parse(response);
+                      console.log(csPedidosJson);
+                      if (csPedidosJson.estado == 1){
+                        var csPedidosData = csPedidosJson.datos;
+                        //alert(csPedidosData);
+                        if(csPedidosData != ""){
+                          // $("#texto_dni").text(dni);
+                          //document.getElementById("cargando").display = "hiden";
+                          //$('#cargando').toggle();
+                          document.getElementById('cargando').style.display = 'none';
+                          document.getElementById("mylistview_cronograma_sueldos").style.visibility = "visible";
+                          var listaPrestadores = document.getElementById("mylistview_cronograma_sueldos");
+                          $("#mylistview_cronograma_sueldos").empty;
+                          var variable = "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>";
+                          for (var i = 0; i < csPedidosData.length; i++) {
+                            var object = csPedidosData[i];
+                            variable += "<div class='center' style='text-align:left;margin-top:10px;'>";
+                            variable += "<p style='text-align:center;font-size:200%;'>"+object.fecha_seteada+"</p><p style='text-align:left;font-size:180%;margin-left:20px;'>"+object.titulo+"</p><p style='white-space:pre-line;font-size:150%;margin-left:20px;'>"+object.areas+"</p>";
+                            variable += "</div><hr>";
+                          }
+                          listaPrestadores.innerHTML = variable;
+                          $("#mylistview_cronograma_sueldos").listview("refresh");
+                          //$.mobile.loading( "hide" );
+                        }else{
+                          $("#mylistview_cronograma_sueldos").empty;
+                          var variable = "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>";
+                        }
+
+                      }else{
+                        //document.getElementById("tabla_estado").style.backgroundColor='black';
+                      }
+                    }
+                  });
+                }
+
+                $( document ).on( "click", ".show-page-loading-msg", function() {
+                  var $this = $( this ),
+                  theme = $this.jqmData( "theme" ) || $.mobile.loader.prototype.options.theme,
+                  msgText = $this.jqmData( "msgtext" ) || $.mobile.loader.prototype.options.text,
+                  textVisible = $this.jqmData( "textvisible" ) || $.mobile.loader.prototype.options.textVisible,
+                  textonly = !!$this.jqmData( "textonly" );
+                  html = $this.jqmData( "html" ) || "";
+                  $.mobile.loading( "show", {
+                    text: msgText,
+                    textVisible: textVisible,
+                    theme: theme,
+                    textonly: textonly,
+                    html: html
+                  });
+                })
+                .on( "click", ".hide-page-loading-msg", function() {
+                  $.mobile.loading( "hide" );
+                });
+  </script>
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.1.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style(1).css">
+  <script src="js/jquery-1.9.1.min.js"></script>
+  <script src="js/jquery.mobile-1.4.1.min.js"></script>
+  <title>Gobierno de La Rioja</title>
+</head>
+<body onload="startTime(), cleanAll(), disclaimerPopUp();" class="ui-mobile-viewport ui-overlay-a">
+<!-- history<div data-role="page" style="background: rgb(234, 27, 54); min-height: 700px;" data-url="#" tabindex="0" class="ui-page ui-page-theme-a"> -->
+<div data-role="page" style="background: rgb(234, 27, 54); min-height: 700px;" tabindex="0" class="ui-page ui-page-theme-a">
+<div align="center" class="padre">
+<div class="hijo">
+    <!--desde acá Panel Principal-->
+<div data-role="panel" data-display="overlay" id="panel_principal" data-position="left" style="background-color: #606062;width:270px;" class="ui-panel ui-panel-position-left ui-panel-display-overlay ui-panel-closed ui-body-inherit ui-panel-animate">
+<div class="ui-panel-inner"><button data-icon="delete" data-iconpos="right" data-rel="close" class="ui-nodisc-icon ui-btn ui-icon-delete ui-btn-icon-right ui-shadow ui-corner-all" id="boton-encabezado-principal"></button><br>
+  <table style="margin-bottom:7px;">
+  <tbody>
+    <tr style="height:50px;">
+      <td style="width:23%;">
+        <a href="https://larioja.neotec.com.ar/servicio/lariojaprovincia/#telefonos_utiles" style="color:white;text-decoration:none;" class="ui-link">
+          <img src="img/llamar_blanco.png" style="width:20px;"></a>
+        </td>
+        <td style="color:white;"><a href="https://larioja.neotec.com.ar/servicio/lariojaprovincia/#telefonos_utiles" style="color:white;text-decoration:none;" class="ui-link"><b style="font-size:130%;">Teléfonos Útiles</b></a>
+        </td>
+      </tr>
+      <tr style="height:50px;">
+        <td style="width:23%;">
+          <a href="https://play.google.com/store/apps/details?id=com.lariojaprovincia.app" target="_blank" style="color:white;text-decoration:none;" class="ui-link">
+            <img src="img/android.png" style="width:20px;"></a>
+          </td>
+          <td style="color:white;">
+            <a href="https://play.google.com/store/apps/details?id=com.lariojaprovincia.app" target="_blank" style="color:white;text-decoration:none;" class="ui-link"><b style="font-size:130%;">APP Android</b></a>
+          </td>
+          <!-- change -->
+        </tr>
+      </tbody>
+  </table><br><br><br>
+  <table style="width:100%;">
+    <tbody>
+      <tr style="width:100%;text-align:center;">
+        <td style="width:25%;">
+          <a href="https://www.facebook.com/fergeek/" target="_blank" class="ui-link"><img src="img/icono_facebook.png" style="width:26px;"></a>
+        </td>
+        <td style="width:25%;text-align:center;">
+          <a href="https://www.instagram.com/fergeek/" target="_blank" class="ui-link"><img src="img/icono_twitter.png" style="width:26px;"></a>
+        </td>
+        <td style="width:25%;text-align:center;">
+          <a href="https://www.instagram.com/fergeek/" target="_blank" class="ui-link"><img src="img/icono_instagram.png" style="width:26px;"></a>
+        </td>
+        <td style="width:25%;"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!--<img src="imgmagenes/portada.jpg" style="width:295px;margin-left:-16px;"/>   -->
+</div>
+</div></div>
+  <div align="center" class="padre">
+  <div class="hijo">
+<div data-role="header" style="background:url(imagenes/logo1.jpg); background-size:cover; width:100%;" role="banner" class="ui-header ui-bar-inherit">
+        <div data-role="navbar" class="ui-navbar" role="navigation">
+            <ul class="ui-grid-b">
+                <li data-icon="false" class="ui-block-a">
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+                </li>
+                 <li data-icon="false" id="ver_escaners" onclick="window.open(&#39;https://www.larioja.gob.ar&#39;, &#39;_system&#39;);" class="ui-block-b">
+                  <h2 id="boton_escaner"><img src="img/marca_la_rioja.png" id="imagen_header">
+                        </h2>
+                </li>
+                <li data-icon="false" class="ui-block-c">
+                  <h2 id="boton_encabezado_derecha"><img src="img/nada.png" id="imagen_encabezado_derecha">
+                  </h2>
+                </li>
+           </ul>
+        </div>
+   <a href="https://larioja.neotec.com.ar/servicio/lariojaprovincia/#panel_principal" data-role="button" data-iconpos="notext" data-icon="carat-r" class="ui-nodisc-icon ui-link ui-btn-left ui-btn ui-icon-carat-r ui-btn-icon-notext ui-shadow ui-corner-all" id="boton-encabezado-principal" role="button"></a>
+    </div>
+<br>
+
+    <h2 style="color:white;">PERMISO PARA CIRCULAR</h2>
+    <div style="width:80%;margin-top:5px;">
+    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset"><input type="number" name="dni" id="dni" placeholder="DNI (SIN PUNTOS)" style="color:rgb(80,80,80);text-align:center;font-size:130%;width:80%;" autocomplete="false" required="required"></div>
+      <a onclick="requestCertf();switchPage('consulta_dni')" data-role="button" data-corners="false" style="background-color:white;font-weight:bolder;color:#EA1B36;border-radius: 6px;" class="ui-link ui-btn ui-shadow">BUSCAR DNI</a>
+      <a onclick="festipeques20();" data-role="button" data-corners="false" style="margin-top:30px;background-color:#EA1B36;font-weight:bolder;color:white;border-radius: 6px;" class="ui-link ui-btn ui-shadow" role="button">FESTIPEQUES</a>
+      <a onclick="addUser();" target="_blank" data-role="button" data-corners="false" style="background-color:#EA1B36;font-weight:bolder;color:white;border-radius: 6px;" class="ui-link ui-btn ui-shadow" role="button">GESTIÓN DE PERMISOS</a>
+      <a href="https://larioja.gob.ar/protocolos/" target="_blank" data-role="button" data-corners="false" style="background-color:#EA1B36;font-weight:bolder;color:white;border-radius: 6px;" class="ui-link ui-btn ui-shadow" role="button">PROTOCOLOS Y GUÍAS</a>
+      <a onclick="removeUser();" data-role="button" data-corners="false" style="background-color:#EA1B36;font-weight:bolder;color:white;border-radius: 6px;" class="ui-link ui-btn ui-shadow" role="button">SUELDOS</a>
+     <br>
+      <img src="img/logo_la_rioja.png" onclick="window.open(&#39;https://www.larioja.gob.ar&#39;, &#39;_system&#39;);" style="width:140px;display:block;margin:auto;">
+     </div>
+   </div>
+ </div>
+
+</div>
+<!--FIN PRINCIPAL-->
+<!--PAGINA CONSULTA DNI-->
+  <div data-role="page" id="consulta_dni" style="background: rgb(234, 27, 54); min-height: 700px;" data-url="consulta_dni" tabindex="0" class="ui-page ui-page-theme-a ui-page-active">
+
+    <div align="center" class="padre">
+    <div class="hijo2 ui-header ui-bar-inherit" data-role="header" style="background:#EA1B36;" role="banner">
+               <table>
+           <tbody><tr>
+              <td>
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+               </td>
+                <td>
+                  <h2 id="boton_escaner"><img src="img/marca_la_rioja.png" id="imagen_header">
+                        </h2>
+               </td>
+                <td>
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+               </td>
+           </tr>
+         </tbody></table>
+
+      <a data-icon="arrow-l" onclick="switchPage('panel_principal');" data-role="button" data-iconpos="notext" class="ui-nodisc-icon ui-link ui-btn-left ui-btn ui-icon-arrow-l ui-btn-icon-notext ui-shadow ui-corner-all" id="boton-encabezado-principal" role="button"></a>
+
+    <table id="tabla_estado" style="width: 100%; background-color: green;">
+        <tbody><tr style="width:100%;">
+            <td style="width:20%;padding-left:20px;">
+                <div class="loader"></div>
+            </td>
+            <td style="width:80%;padding-left:20px;">
+                 <h2 id="texto_dni" style="color:white;"></h2>
+                <h2 id="texto_estado" style="margin-top:-10px;color:white;">AUTORIZADO</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:20%;padding-left:20px;">
+
+            </td>
+            <td style="width:80%;padding-left:20px;">
+                 <h2 style="margin-top:-5px;"><div id="reloj">20 : 55 : 30</div></h2>
+            </td>
+        </tr>
+    </tbody></table>
+    <ul id="mylistview_permiso_circular" style="background-color: rgb(255, 255, 255); visibility: visible;" data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+      <li class="ui-li-static ui-body-inherit ui-first-child ui-last-child"><div class="ui-loader"><span class="ui-icon ui-icon-loading"></span></div></li><div class="center" style="text-align:center;margin-top:10px;"><p style="text-align:center;font-size:250%;">NN</p><p style="text-align:center;font-size:200%;">RMD<br>Trabajador/a<br>------------------------<br>LUNES A DOMINGO 24 HS</p></div><hr></ul>
+     </div>
+</div>
+</div>
+<!--</div>-->
+<!--FIN CONSULTA DNI-->
+<!--PAGINA TELEFONOS UTILES-->
+  <div data-role="page" id="telefonos_utiles" style="background:#EA1B36;" data-url="telefonos_utiles">
+    <div align="center" class="padre">
+      <div class="hijo2" data-role="header" style="background:#EA1B36;">
+        <div data-role="navbar">
+            <ul>
+                <li data-icon="false">
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+                </li>
+                 <li data-icon="false" id="ver_escaners">
+                  <h2 id="boton_escaner"><img src="img/marca_la_rioja.png" id="imagen_header">
+                        </h2>
+                </li>
+                <li data-icon="false">
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+                </li>
+           </ul>
+        </div>
+      <a data-icon="arrow-l" onclick="switchPage('panel_principal');" data-role="button" data-iconpos="notext" class="ui-icon-carat-r ui-btn-icon-left ui-nodisc-icon" id="boton-encabezado-principal"></a>
+    <div data-role="content" align="justify">
+       <h3 style="color:white;">Teléfonos útiles</h3>
+  <br>
+       <ul data-role="listview" data-inset="false">
+           <li data-icon="false"><a href="tel:+543804640054" style="color:rgb(80,80,80);"><img src="img/violencia_de_genero.png" style="width:35px;margin-top:15px;margin-left:30px;">Violencia de Género<br>3804 640054</a></li>
+           <li data-icon="false"><a href="tel:911" style="color:rgb(80,80,80);"><img src="img/911.png" style="width:35px;margin-top:15px;margin-left:30px;">Sistema Integrado de Seguridad Ciudadana<br>911</a></li>
+           <li data-icon="false"><a href="tel:+543804439211" style="color:rgb(80,80,80);"><img src="img/aeropuerto.png" style="width:30px;margin-top:15px;margin-left:30px;">Aeropuerto A. Almonacid<br>3804 439211</a></li>
+           <li data-icon="false"><a href="tel:911" style="color:rgb(80,80,80);"><img src="img/bomberos.png" style="width:32px;margin-top:15px;margin-left:30px;">Bomberos<br>911</a></li>
+           <li data-icon="false"><a href="tel:911" style="color:rgb(80,80,80);"><img src="img/defensa_civil.png" style="width:36px;margin-top:15px;margin-left:30px;">Defensa civil<br>911</a></li>
+           <li data-icon="false"><a href="tel:911" style="color:rgb(80,80,80);"><img src="img/hospital.png" style="width:33px;margin-top:15px;margin-left:30px;">Emergencias médicas<br>911 o 107</a></li>
+           <li data-icon="false"><a href="tel:+543804457201" style="color:rgb(80,80,80);"><img src="img/hospital2.png" style="width:33px;margin-top:15px;margin-left:30px;">Hospital de Clínicas UNLaR<br>3804 457201</a></li>
+           <li data-icon="false"><a href="tel:+543804456900" style="color:rgb(80,80,80);"><img src="img/hospital2.png" style="width:33px;margin-top:15px;margin-left:30px;">Hospital de la Madre y el Niño<br>3804 456900</a></li>
+           <li data-icon="false"><a href="tel:+543804453552" style="color:rgb(80,80,80);"><img src="img/hospital2.png" style="width:33px;margin-top:15px;margin-left:30px;">Hospital Enrique Vera Barros<br>3804 453552 / 3 / 4</a></li>
+           <li data-icon="false"><a href="tel:911" style="color:rgb(80,80,80);"><img src="img/policia.png" style="width:32px;margin-top:15px;margin-left:30px;">Policía<br>911</a></li>
+           <li data-icon="false"><a href="tel:+543804427991" style="color:rgb(80,80,80);"><img src="img/omnibus.png" style="width:32px;margin-top:15px;margin-left:30px;">Terminal de omnibus de La Rioja<br>3804 427991 / 4425453</a></li>
+           <li data-icon="false"><a href="tel:+543804468575" style="color:rgb(80,80,80);"><img src="img/combi.png" style="width:30px;margin-top:15px;margin-left:30px;">Terminal de combis de La Rioja<br>3804 468575</a></li>
+        </ul>
+      </div>
+      </div>
+    </div>
+</div>
+<!--FIN TELEFONOS UTILES-->
+<!--PAGINA FESTIPEQUES-->
+<div data-role="page" id="festipeques20" style="background:#EA1B36;" data-url="festipeques20">
+    <div align="center" class="padre" style="background:#EA1B36;">
+      <div class="hijo2" data-role="header" style="background:#F9F9FA;">
+        <div data-role="navbar" style="background:#EA1B36;">
+            <ul>
+                <li data-icon="false">
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+                </li>
+                 <li data-icon="false" id="ver_escaners">
+                  <h2 id="boton_escaner"><img src="img/marca_la_rioja.png" id="imagen_header">
+                        </h2>
+                </li>
+                <li data-icon="false">
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+                </li>
+           </ul>
+        </div>
+      <a data-icon="arrow-l" onclick="switchPage('panel_principal');" data-role="button" data-iconpos="notext" class="ui-icon-carat-r ui-btn-icon-left ui-nodisc-icon" id="boton-encabezado-principal"></a>
+    <div data-role="content" align="justify">
+      <h3 style="color:rgb(80,80,80);text-align:left;width:84%;margin-bottom:14px;">FESTIPEQUES</h3>
+        <label id="label_gris" style="width:84%;">¡Inscribite y participá de sorteos espectaculares para todos los niñ@s de La Rioja!. Participan niñxs de entre o y 12 años o que estén cursando el 7° grado.</label>
+        <hr>
+        <label id="label_gris">DNI del niño o niña</label>
+        <input type="number" name="dni_fp20" id="dni_fp20" style="color:rgb(80,80,80);text-align:left;font-size:130%;width:80%;" autocomplete="false" required="required">
+        <label id="label_gris">Apellido y Nombre del niño o niña</label>
+        <input type="text" name="apellido_nombre_fp20" id="apellido_nombre_fp20" style="color:rgb(80,80,80);text-align:left;font-size:130%;width:80%;" autocomplete="false" required="required">
+        <label id="label_gris">Fecha de Nacimiento</label>
+        <div style="text-align:left;">
+        <table>
+          <tbody><tr>
+            <td>
+        <select id="dia_fp20" style="color:rgb(80,80,80);background-color:white;border:none;font-size:16px;margin-right:10px;">
+              <option value="" selected="selected">Día</option>
+              <option value="01">1</option>
+              <option value="02">2</option>
+              <option value="03">3</option>
+              <option value="04">4</option>
+              <option value="05">5</option>
+              <option value="06">6</option>
+              <option value="07">7</option>
+              <option value="08">8</option>
+              <option value="09">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+              <option value="21">21</option>
+              <option value="22">22</option>
+              <option value="23">23</option>
+              <option value="24">24</option>
+              <option value="25">25</option>
+              <option value="26">26</option>
+              <option value="27">27</option>
+              <option value="28">28</option>
+              <option value="29">29</option>
+              <option value="30">30</option>
+              <option value="31">31</option>
+        </select>
+        </td>
+        <td>
+        <select id="mes_fp20" style="color:rgb(80,80,80);background-color:white;border:none;font-size:16px;margin-right:10px;">
+              <option value="" selected="selected">Mes</option>
+              <option value="01">Enero</option>
+              <option value="02">Febrero</option>
+              <option value="03">Marzo</option>
+              <option value="04">Abril</option>
+              <option value="05">Mayo</option>
+              <option value="06">Junio</option>
+              <option value="07">Julio</option>
+              <option value="08">Agosto</option>
+              <option value="09">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+        </select>
+        </td>
+        <td>
+      <select id="anio_fp20" style="color:rgb(80,80,80);background-color:white;border:none;font-size:16px;margin-right:10px;">
+              <option value="" selected="selected">Año</option>
+              <option value="2006">2006</option>
+              <option value="2007">2007</option>
+              <option value="2008">2008</option>
+              <option value="2009">2009</option>
+              <option value="2010">2010</option>
+              <option value="2011">2011</option>
+              <option value="2012">2012</option>
+              <option value="2013">2013</option>
+              <option value="2014">2014</option>
+              <option value="2015">2015</option>
+              <option value="2016">2016</option>
+              <option value="2017">2017</option>
+              <option value="2018">2018</option>
+              <option value="2019">2019</option>
+              <option value="2020">2020</option>
+        </select>
+        </td>
+        </tr>
+        </tbody></table>
+        </div>
+        <label id="label_gris">Nivel educativo</label>
+        <select id="nivel_fp20" style="color:rgb(80,80,80);background-color:white;border:none;font-size:16px;margin-right:10px;">
+              <option value="" selected="selected"></option>
+              <option value="Inicial">Inicial</option>
+              <option value="Primario">Primario</option>
+              <option value="Ninguno">Ninguno</option>
+        </select>
+        <label id="label_gris" style="margin-top:14px;">Institución a la que asiste</label>
+        <input type="text" name="institucion_fp20" id="institucion_fp20" style="color:rgb(80,80,80);text-align:left;font-size:130%;width:80%;" autocomplete="false" required="required">
+        <label id="label_gris">Localidad</label>
+        <select name="localidad_fp20" id="localidad_fp20" style="color:rgb(80,80,80);text-align:left;">
+              <option value=""></option>
+              <option value="La Rioja">La Rioja</option>
+              <option value="Aimogasta">Aimogasta</option>
+              <option value="Aminga">Aminga</option>
+              <option value="Anillaco">Anillaco</option>
+              <option value="Anjullón">Anjullón</option>
+              <option value="Campanas">Campanas</option>
+              <option value="Catuna">Catuna</option>
+              <option value="Chamical">Chamical</option>
+              <option value="Chañarmuyo">Chañarmuyo</option>
+              <option value="Chepes">Chepes</option>
+              <option value="Chilecito">Chilecito</option>
+              <option value="Chuquis">Chuquis</option>
+              <option value="Famatina">Famatina</option>
+              <option value="Guandacol">Guandacol</option>
+              <option value="La Rioja">La Rioja</option>
+              <option value="Los Molinos">Los Molinos</option>
+              <option value="Los Sauces">Los Sauces</option>
+              <option value="Malanzán">Malanzán</option>
+              <option value="Milagro">Milagro</option>
+              <option value="Olta">Olta</option>
+              <option value="Pagancillo">Pagancillo</option>
+              <option value="Patquía">Patquía</option>
+              <option value="Pinchas">Pinchas</option>
+              <option value="Pituil">Pituil</option>
+              <option value="Tama">Tama</option>
+              <option value="Termas de Santa Teresita">Termas de Santa Teresita</option>
+              <option value="Ulapes">Ulapes</option>
+              <option value="Villa Castelli">Villa Castelli</option>
+              <option value="Villa Mazá">Villa Mazán</option>
+              <option value="Villa San José de Vinchina">Villa San José de Vinchina</option>
+              <option value="Villa Sanagasta">Villa Sanagasta</option>
+              <option value="Villa Unión">Villa Unión</option>
+        </select>
+        <label id="label_gris">Departamento</label>
+        <select name="departamento_fp20" id="departamento_fp20" style="color:rgb(80,80,80);text-align:left;">
+              <option value=""></option>
+              <option value="Arauco">Arauco</option>
+              <option value="Capital">Capital</option>
+              <option value="Castro Barros">Castro Barros</option>
+              <option value="Chamical">Chamical</option>
+              <option value="Chilecito">Chilecito</option>
+              <option value="Coronel Felipe Varela">Coronel Felipe Varela</option>
+              <option value="Famatina">Famatina</option>
+              <option value="Gral Ángel Vicente Peñaloza">Gral Ángel Vicente Peñaloza</option>
+              <option value="General Belgrano">General Belgrano</option>
+              <option value="Gral Juan Facundo Quiroga">Gral Juan Facundo Quiroga</option>
+              <option value="General Lamadrid">General Lamadrid</option>
+              <option value="General Ocampo">General Ocampo</option>
+              <option value=" General San Martín">General San Martín</option>
+              <option value="Independencia">Independencia</option>
+              <option value="Rosario Vera Peñaloza">Rosario Vera Peñaloza</option>
+              <option value="San Blas de los Sauces">San Blas de los Sauces</option>
+              <option value="Sanagasta">Sanagasta</option>
+              <option value="Vinchina">Vinchina</option>
+        </select>
+        <label id="label_gris">Teléfono del Padre, madre o tutor/a</label>
+        <input type="tel" name="telefono_fp20" id="telefono_fp20" style="color:rgb(80,80,80);text-align:left;font-size:130%;width:80%;" autocomplete="false" required="required">
+        <a onclick="enviarFestipeques20();" data-role="button" data-corners="false" style="margin-top:25px;background-color:none;border-color:#EA1B36;font-weight:bolder;color:#EA1B36;border-radius: 6px;" class="ui-link ui-btn ui-shadow" role="button">ENVIAR</a>
+    </div>
+    </div>
+  </div>
+</div>
+<!--FIN FESTIPEQUES20-->
+<!--PAGINA SUELDOS-->
+  <div data-role="page" id="sueldos" style="background:#EA1B36;" data-url="sueldos">
+    <div align="center" class="padre">
+      <div class="hijo2" data-role="header" style="background:#EA1B36;">
+        <div data-role="navbar">
+            <ul>
+                <li data-icon="false">
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+                </li>
+                 <li data-icon="false" id="ver_escaners">
+                  <h2 id="boton_escaner"><img src="img/marca_la_rioja.png" id="imagen_header">
+                        </h2>
+                </li>
+                <li data-icon="false">
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+                </li>
+           </ul>
+        </div>
+      <a data-icon="arrow-l" onclick="switchPage('panel_principal');" data-role="button" data-iconpos="notext" class="ui-icon-carat-r ui-btn-icon-left ui-nodisc-icon" id="boton-encabezado-principal"></a>
+    <div data-role="content" align="center">
+       <h3 style="color:white;text-align:left;width:84%;">Sueldos</h3>
+       <a onclick="cronogramaSueldos();" href="https://larioja.neotec.com.ar/servicio/lariojaprovincia/#cronograma_de_sueldos" data-role="button" data-corners="false" style="width:84%;margin-top:30px;background-color:#EA1B36;font-weight:bolder;color:white;border-radius: 6px;" class="ui-link ui-btn ui-shadow" role="button">CRONOGRAMA DE SUELDOS</a>
+
+      <a href="https://empleadospublicos.larioja.gov.ar/recibos/web/login" target="_blank" data-role="button" data-corners="false" style="width:84%;margin-top:20px;background-color:#EA1B36;font-weight:bolder;color:white;border-radius: 6px;" class="ui-link ui-btn ui-shadow" role="button">RECIBO DE SUELDO DIGITAL</a>
+    </div>
+    </div>
+  </div>
+</div>
+<!--FIN SUELDOS-->
+<!--PAGINA CRONOGRAMA DE SUELDOS-->
+  <div data-role="page" id="cronograma_de_sueldos" style="background:#EA1B36;" data-url="cronograma_de_sueldos">
+    <div align="center" class="padre">
+      <div class="hijo2" data-role="header" style="background:#EA1B36;">
+        <div data-role="navbar">
+            <ul>
+                <li data-icon="false">
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+                </li>
+                 <li data-icon="false" id="ver_escaners">
+                  <h2 id="boton_escaner"><img src="img/marca_la_rioja.png" id="imagen_header">
+                        </h2>
+                </li>
+                <li data-icon="false">
+                  <h2 id="boton_escaner"><img src="img/nada.png" id="imagen_header2" style="margin-left:31px;height:30px;margin-top:-1px;">
+                  </h2>
+                </li>
+           </ul>
+        </div>
+      <a data-icon="arrow-l" onclick="switchPage('panel_principal');" data-role="button" data-iconpos="notext" class="ui-icon-carat-r ui-btn-icon-left ui-nodisc-icon" id="boton-encabezado-principal"></a>
+       <div data-role="content" align="center">
+       <h3 style="color:white;text-align:left;width:84%;">Cronograma de Sueldos</h3>
+       <table id="tabla_estado" style="width:100%;">
+        <tbody><tr style="width:100%;">
+            <td style="width:20%;padding-left:20px;">
+                <div class="loader" id="cargando"></div>
+            </td>
+            <td style="width:80%;padding-left:20px;">
+                 <h2 id="texto_dni" style="color:white;"></h2>
+                <h2 id="texto_estado" style="margin-top:-10px;color:white;"></h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:20%;padding-left:20px;">
+
+            </td>
+            <td style="width:80%;padding-left:20px;">
+                 <h2 style="margin-top:-5px;"><div id="reloj"></div></h2>
+            </td>
+
+        </tr>
+    </tbody></table>
+      <ul id="mylistview_cronograma_sueldos" style="background-color: #FFFFFF;" data-role="listview" data-inset="true">
+      </ul>
+  </div>
+  </div>
+</div>
+</div>
+<!--FIN CRONOGRAMA DE SUELDOS-->
+<div class="ui-loader ui-corner-all ui-body-a ui-loader-default"><span class="ui-icon-loading"></span><h1>loading</h1></div><div class="ui-panel-dismiss" data-panelid="panel_principal"></div>
+<div class="disclaimer">
+  <span>
+    <h4><strong>DISCLAIMER: AVISO IMPORTANTE!</strong></h4>
+    <ul>
+      <li>
+        El permiso generado no corresponde a un permiso expedido por el Gobierno de La Rioja por lo tanto <strong>no es válido bajo ningún punto de vista</strong> y solo tiene como objetivo entretener. Nadie debería utilizar este sitio para infringir la restricción de circulación del <strong>Decreto Provincial N1009</strong> que rige a la fecha, y no me hago reponsable del uso del mismo para ello.
+      </li>
+      <li>
+        No se vulneraron servidores ni se accedió a información privada de usuarios. Todos los recursos utlizados para generar esta página son de acceso público y obtenidos de manera legal mediante la herramienta de depuración que se encuentran en cualquier navegador web.
+      </li>
+      <li>
+        Toda la información personal ingresada por este medio se almacena unicamente en el dispositivo y no se envía a otros dispositivos externos. La protección de dicha información corren por cuenta de la tecnología del navegador y/o su responsabilidad.
+      </li>
+      <li>
+        El desarrollo de la misma no persigue otro fin que no sea el educativo.
+      </li>
+      <li>
+        La difusión y distribución de este repositorio queda bajo total responsabilidad del usuario. Se recomienda discreción.
+      </li>
+    </ul>
+    <a class="btn" onclick="disclaimerPopUp()">Entiendo</a>
+  </span>
+</div>
+</body></html>

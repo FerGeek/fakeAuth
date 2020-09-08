@@ -1,0 +1,121 @@
+.my-gallery {
+  width: 100%;
+  float: left;
+}
+.my-gallery img {
+  width: 100%;
+  height: auto;
+}
+.my-gallery figure {
+  display: block;
+  float: left;
+  margin: 0 5px 5px 0;
+  width: 150px;
+}
+.my-gallery figcaption {
+  display: none;
+}
+.fondo{
+	background-color: rgb(195,100,70);
+}
+.fondo_negro{
+  background-color: black;
+}
+#encabezado{
+  	background-color:black;border-color:transparent;
+}
+#titulo_codigo{
+padding-left:20px;margin-left:-5px;padding-top:5px;padding-bottom:5px;margin-bottom:0px;color:white;background-color:rgb(114,78,54);
+}
+h2{
+  color: white;
+}
+p,ul {
+	text-align: left;margin-left: 5px;margin-right: 5px;text-shadow: none;
+}
+#texto_blanco{
+    text-decoration:none;color:white;text-shadow:none;font-size: 17.5px;
+    text-align: justify;
+}
+#texto_80{
+    text-decoration:none;color:rgb(80,80,80);text-shadow:none;font-size: 17.5px;
+    text-align: justify;
+}
+#boton_galeria,#boton_escaner,#boton_ver_texto{
+  font-size:17px;text-align:center;color:rgb(114,78,54);
+}
+#boton_encabezado_derecha{
+  text-align:right;
+  font-size:17px;
+  color:rgb(114,78,54);  
+}
+#boton_escaner_demo
+{
+  font-size:8px;text-align:center;color:rgb(114,78,54);
+}
+
+#imagen_footer{
+  height:32px;vertical-align: middle;
+}
+#imagen_footer_demo{
+  height:10px;vertical-align: middle;
+}
+#imagen_header{
+  height:35px;vertical-align: middle;margin-top: -10px;
+}
+#imagen_encabezado_derecha{
+  margin-top:-20px;
+  height:45px;
+}
+#imagen_header2{
+  height:21px;vertical-align: middle;margin-top: 5px;
+}
+#imagen_footer2{
+  height:32px;vertical-align: middle;background-color: red;
+}
+#boton_principal, #startScan {
+    border-left: none;border-top: none; border-right: none; 
+    border-bottom: 2px rgb(255,255,255) solid;
+    text-shadow: none;
+    background-color:transparent;
+}
+#boton_principal2 {
+	border-left: none;border-top: none; border-right: none; border-bottom: none;
+	border-bottom: none;
+	text-shadow: none;
+	background-color:transparent;
+	color:white;font-size: 17.5px;
+	margin-top:10px;padding-bottom: 20px;
+}
+#boton_principal2a {
+  border-left: none;border-top: none; border-right: none; border-bottom: none;
+  border-bottom: none;
+  text-shadow: none;
+  background-color:transparent;
+  color:grey;font-size: 17.5px;
+  margin-top:10px;padding-bottom: 20px;
+}
+#lista_localidades {
+  border-left: none;border-top: none; border-right: none; border-bottom: none;
+  border-bottom: none;
+  text-shadow: none;
+  margin-left: 10px;
+  background-color:transparent;
+  color:grey;font-size: 17.5px;
+
+}
+#boton_principal_panel {
+  border-left: none;border-top: none; border-right: none; border-bottom: none;
+  border-bottom: none;
+  text-shadow: none;
+  background-color:transparent;
+ /* color:white;font-size: 17.5px;
+  */
+  color:white;
+  margin-top:10px;padding-bottom: 20px;
+}
+@media (orientation: portrait) {
+	#portrait{
+  		display: block;
+	}
+}
